@@ -15,6 +15,8 @@ public class getRequest {
     private static final String URL_TOKEN = "http://localhost:8080/realms/master/protocol/openid-connect/token";
     private static final String URL_VERSION = "http://localhost:8080/admin/serverinfo";
 
+    //private static final String URL_TOKEN = "http://localhost:8080/auth/realms/master/protocol/openid-connect/token";
+    //private static final String URL_VERSION = "http://localhost:8080/auth/admin/serverinfo";
 
     public void getRequest() throws IOException {
     }
@@ -34,9 +36,10 @@ public class getRequest {
         os.close();
 
         String response = getResponse(conn);
+        //System.out.println(response);
         JSONObject obj = new JSONObject(response);
         String token = obj.getString("access_token");
-        System.out.println("Token: " + token);
+        //System.out.println("Token: " + token);
         return token;
     }
 

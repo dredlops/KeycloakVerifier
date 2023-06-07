@@ -4,36 +4,33 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.omg.CORBA.PRIVATE_MEMBER;
 
 import java.io.FileWriter;
 
+/*
+    Class used to produce an output file that will be used to produce a log report
+ */
 public class produceReport {
 
-    //JSONArray array = Json.createArrayBuilder();
-    private static final String[] array = new String[20];
+    private static final String[] array = new String[5];
     private static FileWriter writer;
     private static int counter;
 
-    public void produceReport() {
+    private static final String FILE = "output.txt";
+
+    public produceReport() {
         counter = 0;
     }
 
     public void add(String obj) {
         array[counter++] = obj;
-        //array.add(obj);
-        //array.put(obj);
-        //JsonWriter writer = Json.createWriter(new FileOutputStream("/temp/output.json"));
-        try {
-            writer = new FileWriter("output.txt");
-            for ( int i = 0;i < counter;i++)
-                writer.write(array[i]+"\n");
+    }
 
-
-            //writer.write(array.toString());
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public void writeReport() throws IOException {
+        writer = new FileWriter(FILE);
+        for ( int i = 0;i < counter;i++)
+            writer.write(array[i]+"\n");
+        writer.close();
     }
 }

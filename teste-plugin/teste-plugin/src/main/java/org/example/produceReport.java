@@ -2,10 +2,6 @@ package org.example;
 
 import java.io.IOException;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.omg.CORBA.PRIVATE_MEMBER;
-
 import java.io.FileWriter;
 
 /*
@@ -17,7 +13,7 @@ public class produceReport {
     private static FileWriter writer;
     private static int counter;
 
-    private static final String FILE = "output.txt";
+    private static final String FILE = "output.log";
 
     public produceReport() {
         counter = 0;

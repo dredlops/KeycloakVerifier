@@ -33,7 +33,7 @@ public class Token {
         String response = resp.getResponse(conn);
         JSONObject obj = new JSONObject(response);
         String token = obj.getString("access_token");
-        System.out.println("Token: " + token);
+        //System.out.println("Token: " + token);
         return token;
     }
 }

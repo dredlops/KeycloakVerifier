@@ -1,5 +1,4 @@
 org\example\vulnerabilityTwo.class
-org\example\addWarning.class
 org\example\produceReport.class
 org\example\warning$severit.class
 org\example\warning.class
@@ -11,7 +10,6 @@ org\example\Main.class
 org\example\MyMojo.class
 org\example\Response.class
 org\example\vulnerabilityThree.class
-org\example\GetVersionMojo.class
 org\example\KeycloakVerifier.class
 org\example\vulnerabilityOne.class
 org\example\getCVE.class

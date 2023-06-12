@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.print.DocFlavor;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -12,45 +11,44 @@ public class KeycloakVerifier {
 
     private String versionInUse;
     private static JSONArray cves;
-    private static JSONArray cvesNoVersion;
 
-    private static JSONArray vulnerabilities;
-
-    private static getVulnerabilityInRecords gve;
+    private static getVulnerabilityInRecords getVulnerabilityInRecords;
 
     private static produceReport produceReport;
 
 
     public KeycloakVerifier( String versionInUse) throws IOException {
-        gve= new getVulnerabilityInRecords();
-        produceReport=new produceReport();
+        getVulnerabilityInRecords= new getVulnerabilityInRecords();
+        produceReport = new produceReport();
         this.versionInUse=versionInUse;
         getCVE getCVE = new getCVE();
         cves = getCVE.get();
         verify();
+        produceReport.writeReport();
     }
 
     public KeycloakVerifier(int timeOut, String versionInUse) throws IOException {
-        gve= new getVulnerabilityInRecords();
+        getVulnerabilityInRecords= new getVulnerabilityInRecords();
         this.versionInUse=versionInUse;
         getCVE getCVE = new getCVE(timeOut);
         cves = getCVE.get();
         verify();
+        produceReport.writeReport();
     }
 
     private void verify() throws IOException {
         Iterator it= cves.iterator();
-        Iterator temp;
         JSONObject cve;
-        String product;
         while (it.hasNext()) {
             cve = (JSONObject) it.next();
-            JSONObject aux = gve.getVulnerability(cve.getJSONObject("threat_intel").getJSONObject("general").get("cve").toString());
+            JSONObject aux = getVulnerabilityInRecords.getVulnerability(cve.getJSONObject("threat_intel").getJSONObject("general").get("cve").toString());
 
             //quer dizer que não existe este cve no ficheiro de vulnerabilidades
+            //if(aux.isEmpty()) System.out.println("Atenção, é empty");
+
             if (aux == null) {
-                    //Vulnerabilidades não existentes no ficheiro vulnerabilities.log
-                    analyzeUnknownCVE(cve);
+                //Vulnerabilidades não existentes no ficheiro vulnerabilities.log
+                analyzeUnknownCVE(cve);
             } else{
                 //vulnerabilidade existente no ficheiro vulnerabilities.log
                 analyzeCVE(aux);
@@ -61,12 +59,14 @@ public class KeycloakVerifier {
 
     private void analyzeCVE(JSONObject cve) throws IOException {
         //checks if are any vulnerabilities with this cve and version
-        String version = cve.get("good_version").toString();
+        String good_version = cve.get("good_version").toString();
+        boolean var=isVersionInUseLessThen(good_version);
+        if(var){
 
-        if(isVersionInUseLessThen(version)){
-            JSONObject jsonObject = gve.getVulnerability(cve.getString("cve"));
+            JSONObject jsonObject = getVulnerabilityInRecords.getVulnerability(cve.getString("cve"));
                 //vulnerability found on the vulnerabilities file
-                if(gve.hasVerificationAvailable(jsonObject.getString("cve").toString())){
+                if(getVulnerabilityInRecords.hasVerificationAvailable(jsonObject.getString("cve").toString())){
+
                     boolean isActive=false;
                     //call a method that verifies if the vulnerability really occurs
                     switch (cve.getString("cve")){
@@ -88,7 +88,8 @@ public class KeycloakVerifier {
                         warning wrng = new warning();
                         String cveAux=cve.getString("cve");
 
-                        String warning = wrng.addWarning(gve.getValueOf(cveAux,"severity"), gve.getValueOf(cveAux,"message"),gve.getValueOf(cveAux,"solution"),cveAux );
+                        String warning = wrng.addWarning(getVulnerabilityInRecords.getValueOf(cveAux,"severity"), getVulnerabilityInRecords.getValueOf(cveAux,"message"),getVulnerabilityInRecords.getValueOf(cveAux,"solution"),cveAux );
+
                         produceReport.add(warning);
                     }
                 } else{
@@ -98,17 +99,54 @@ public class KeycloakVerifier {
                     String cveAux=cve.getString("cve");
                     String warning = wrng.addWarning(cve.getString("severity"),cve.getString("message"),cve.getString("solution"),cveAux);
                     produceReport.add(warning);
+                    System.out.println("Warning produced "+cveAux);
                 }
         }
-        produceReport.writeReport();
+
     }
 
 
     private boolean isVersionInUseLessOrEqualThen(String version){
-        return Integer.parseInt(versionInUse.split("\\.")[0]) <= Integer.parseInt(version.split("\\.")[0]);
+        String[] inUse = versionInUse.split("\\.");
+        String[] vers = version.split("\\.");
+        if(Integer.parseInt(inUse[0])<Integer.parseInt(vers[0])){
+            return true;
+        } else{
+            if(Integer.parseInt(inUse[0])==Integer.parseInt(vers[0])){
+                if(Integer.parseInt(inUse[1])<Integer.parseInt(vers[1]))
+                    return true;
+                else{
+                    if(Integer.parseInt(inUse[1])==Integer.parseInt(vers[1])){
+                        if(Integer.parseInt(inUse[2])<Integer.parseInt(vers[2]))
+                            return true;
+                        else if (Integer.parseInt(inUse[2])==Integer.parseInt(vers[2]))
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     private boolean isVersionInUseLessThen(String version){
-        return Integer.parseInt(versionInUse.split("\\.")[0]) < Integer.parseInt(version.split("\\.")[0]);
+        String[] inUse = versionInUse.split("\\.");
+        String[] vers = version.split("\\.");
+        if(Integer.parseInt(inUse[0])<Integer.parseInt(vers[0])){
+            return true;
+        } else{
+            if(Integer.parseInt(inUse[0])==Integer.parseInt(vers[0])){
+                if(Integer.parseInt(inUse[1])<Integer.parseInt(vers[1]))
+                    return true;
+                else{
+                    if(Integer.parseInt(inUse[1])==Integer.parseInt(vers[1])){
+                        if(Integer.parseInt(inUse[2])<Integer.parseInt(vers[2]))
+                            return true;
+                        else if (Integer.parseInt(inUse[2])==Integer.parseInt(vers[2]))
+                            return false;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -116,8 +154,7 @@ public class KeycloakVerifier {
      */
     private void analyzeUnknownCVE(JSONObject cve){
         String version=getVersionFixedFromCVE(cve);
-
-        if(!version.equals("") && isVersionInUseLessThen(version)) {
+        if(!version.equals("") && isVersionInUseLessOrEqualThen(version)) {
             //System.out.println("CVE:\n"+cve.toString());
             warning wrng = new warning();
             String cveAux = cve.getJSONObject("threat_intel").getJSONObject("general").get("cve").toString();
@@ -132,9 +169,9 @@ public class KeycloakVerifier {
                 String a = "This vulnerability was mitigated on version " + version;
                 warning = wrng.addWarning(severity, message, a , cveAux);
             }
+            System.out.println(warning);
             produceReport.add(warning);
             }
-
         }
 
 

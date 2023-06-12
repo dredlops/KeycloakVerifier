@@ -12,8 +12,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class getRequest {
-    private static final String URL_TOKEN = "http://localhost:8080/realms/master/protocol/openid-connect/token";
-    private static final String URL_VERSION = "http://localhost:8080/admin/serverinfo";
+    private static final String URL_TOKEN = "http://localhost:8084/realms/master/protocol/openid-connect/token";
+    private static final String URL_VERSION = "http://localhost:8084/admin/serverinfo";
 
     //private static final String URL_TOKEN = "http://localhost:8080/auth/realms/master/protocol/openid-connect/token";
     //private static final String URL_VERSION = "http://localhost:8080/auth/admin/serverinfo";
@@ -21,7 +21,7 @@ public class getRequest {
     public void getRequest() throws IOException {
     }
 
-    private String getToken() throws IOException {
+    public String getToken() throws IOException {
         URL url = new URL(URL_TOKEN);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");

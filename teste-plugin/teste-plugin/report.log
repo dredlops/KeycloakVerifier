@@ -9,5 +9,5 @@
     {"fileName":"what if this is like this","severity":"NORMAL", "lineStart":10, "other":"value", "additional": "stuff"}
 {"fileName":"file.xml.txt","lineRanges":[{"start":11, "end":12, "other":10, "additional": "stuff"}, {"s":11, "e":12, "start":21, "end":22}]}
 
-  {"reference":"CVE-2021-123456","additionalProperties":"{'cve':'CVE-2021-77777777'}"},"severity":"ERROR","lineStart":10,"description":"some comment"}
+  {"reference":"CVE-2021-123456","additionalProperties":"{'cve':'CVE-2021-77777777'}","severity":"ERROR","lineStart":10,"description":"some comment"}
  # this is the end

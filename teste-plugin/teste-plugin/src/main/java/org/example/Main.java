@@ -12,7 +12,12 @@ import java.io.IOException;
 public class Main extends AbstractMojo {
 
     public void execute() {
-        getRequest get = new getRequest();
+        getRequest get;
+        try {
+            get = new getRequest();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         try {
             KeycloakVerifier verifier = new KeycloakVerifier(get.getVersion());
         } catch (IOException e) {

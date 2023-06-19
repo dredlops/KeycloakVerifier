@@ -3,6 +3,8 @@ package org.example;
 import java.io.IOException;
 
 import java.io.FileWriter;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /*
     Class used to produce an output file that will be used to produce a log report
@@ -22,6 +24,7 @@ public class produceReport {
     public void add(String obj) {
         array[counter++] = obj;
     }
+
 
     public void writeReport() throws IOException {
         writer = new FileWriter(FILE);

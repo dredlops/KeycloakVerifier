@@ -43,9 +43,6 @@ public class KeycloakVerifier {
             cve = (JSONObject) it.next();
             JSONObject aux = getVulnerabilityInRecords.getVulnerability(cve.getJSONObject("threat_intel").getJSONObject("general").get("cve").toString());
 
-            //quer dizer que não existe este cve no ficheiro de vulnerabilidades
-            //if(aux.isEmpty()) System.out.println("Atenção, é empty");
-
             if (aux == null) {
                 //Vulnerabilidades não existentes no ficheiro vulnerabilities.log
                 analyzeUnknownCVE(cve);
@@ -99,7 +96,6 @@ public class KeycloakVerifier {
                     String cveAux=cve.getString("cve");
                     String warning = wrng.addWarning(cve.getString("severity"),cve.getString("message"),cve.getString("solution"),cveAux);
                     produceReport.add(warning);
-                    System.out.println("Warning produced "+cveAux);
                 }
         }
 
@@ -155,7 +151,6 @@ public class KeycloakVerifier {
     private void analyzeUnknownCVE(JSONObject cve){
         String version=getVersionFixedFromCVE(cve);
         if(!version.equals("") && isVersionInUseLessOrEqualThen(version)) {
-            //System.out.println("CVE:\n"+cve.toString());
             warning wrng = new warning();
             String cveAux = cve.getJSONObject("threat_intel").getJSONObject("general").get("cve").toString();
             String severity = cve.getJSONObject("details").getString("severity");
@@ -169,7 +164,6 @@ public class KeycloakVerifier {
                 String a = "This vulnerability was mitigated on version " + version;
                 warning = wrng.addWarning(severity, message, a , cveAux);
             }
-            System.out.println(warning);
             produceReport.add(warning);
             }
         }
@@ -183,8 +177,6 @@ public class KeycloakVerifier {
             Iterator matches = aux.getJSONArray("cpe_match").iterator();
             while (matches.hasNext()){
                 JSONObject obj = (JSONObject) matches.next();
-                //System.out.println(obj.toString());
-                //.out.println(cve.getJSONObject("threat_intel").getJSONObject("general").get("cve").toString());
                 String [] split = obj.getString("cpe23Uri").split(":");
                 if(split[3].equals("redhat") || split[3].equals("keycloak"))
                     if(split[4].equals("keycloak")){

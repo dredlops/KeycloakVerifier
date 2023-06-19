@@ -3,7 +3,6 @@ org\example\produceReport.class
 org\example\warning$severit.class
 org\example\warning.class
 org\example\getRequest.class
-org\example\Token.class
 org\example\teste_plugin\HelpMojo.class
 org\example\getVulnerabilityInRecords.class
 org\example\Main.class

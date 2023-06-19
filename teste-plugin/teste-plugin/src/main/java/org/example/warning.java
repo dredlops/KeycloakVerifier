@@ -18,8 +18,6 @@ public class warning {
         String sev;
         int digit1 = Integer.parseInt(temp[0]);
         int digit2 = Integer.parseInt(temp[1]);
-        System.out.println("Digit 1: "+digit1);
-        System.out.println("Digit 2: "+digit2);
 
         sev = String.valueOf(severit.HIGH);
         if(digit1>3){
@@ -38,7 +36,6 @@ public class warning {
                 sev = String.valueOf(severit.LOW);
         }
 
-        //String s = "{\"fileName\":\""+cve+"\",\"severity\":\""+sev+"\",\"message\":\""+description+"\",\"description\":\""+solution+"\"}";
         String s = "{\"message\":\""+description+"\",\"severity\":\""+sev+"\",\"description\":\""+solution+"\",\"filename\":\""+cve+"\"}";
         return s;
     }

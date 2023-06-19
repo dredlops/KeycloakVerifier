@@ -3,26 +3,26 @@ package org.example;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 public class getRequest {
-    private static final String URL_TOKEN = "http://localhost:8084/realms/master/protocol/openid-connect/token";
-    private static final String URL_VERSION = "http://localhost:8084/admin/serverinfo";
 
-    //private static final String URL_TOKEN = "http://localhost:8080/auth/realms/master/protocol/openid-connect/token";
-    //private static final String URL_VERSION = "http://localhost:8080/auth/admin/serverinfo";
+    private static String HOST;
 
-    public void getRequest() throws IOException {
+    private static final String FILE = ".properties";
+    private static final String URL_TOKEN = "realms/master/protocol/openid-connect/token";
+    private static final String URL_VERSION = "admin/serverinfo";
+
+    public getRequest() throws IOException {
+        getProperties();
     }
 
     public String getToken() throws IOException {
-        URL url = new URL(URL_TOKEN);
+        URL url = new URL(HOST+URL_TOKEN);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -36,22 +36,19 @@ public class getRequest {
         os.close();
 
         String response = getResponse(conn);
-        //System.out.println(response);
         JSONObject obj = new JSONObject(response);
         String token = obj.getString("access_token");
-        //System.out.println("Token: " + token);
         return token;
     }
 
     public String getVersion() throws IOException {
         String token = getToken();
-        URL url = new URL(URL_VERSION);
+        URL url = new URL(HOST+URL_VERSION);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", "Bearer " + token);
 
         String response = getResponse(conn);
-        //System.out.println(response);
         JSONObject json = new JSONObject(response);
         String version = json.getJSONObject("systemInfo").getString("version");
 
@@ -85,6 +82,13 @@ public class getRequest {
             throw new RuntimeException(e);
         }
         return response.toString();
+    }
+
+    private void getProperties() throws IOException {
+        Properties prop = new Properties();
+        FileInputStream ip = new FileInputStream(FILE);
+        prop.load(ip);
+        HOST=prop.getProperty("host");
     }
 }
 

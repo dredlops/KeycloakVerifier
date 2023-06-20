@@ -4,7 +4,6 @@ package org.example;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -19,7 +18,8 @@ public class Main extends AbstractMojo {
             throw new RuntimeException(e);
         }
         try {
-            KeycloakVerifier verifier = new KeycloakVerifier(get.getVersion());
+            String version = get.getVersion();
+            new KeycloakVerifier(version);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

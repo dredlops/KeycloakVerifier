@@ -7,7 +7,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.IOException;
 
-@Mojo(name="teste", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name="test", defaultPhase = LifecyclePhase.INITIALIZE)
 public class Main extends AbstractMojo {
 
     public void execute() {
